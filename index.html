@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeX — Modern Trading Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS alag file se aa rahi hai -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<div id="auth-screen">
+  <div class="auth-bg"></div>
+  <div class="auth-grid"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">TX</div>
+      <div class="auth-logo-text">TradeX</div>
+    </div>
+    <div class="auth-title">Welcome back</div>
+    <div class="auth-sub">Login or create a new account to start trading</div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+      <button class="tab-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="login-email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="login-pass" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Login →</button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" id="signup-name" type="text" placeholder="Rahul Sharma">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="signup-email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="signup-pass" type="password" placeholder="Min 6 characters">
+      </div>
+      <button class="btn-primary" onclick="doSignup()">Create Account →</button>
+    </div>
+
+    <div class="auth-error" id="auth-error"></div>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px;text-align:center">
+      Demo: use any email &amp; password (min 6 chars)
+    </p>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+
+  <!-- TOP NAVBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="topbar-logo-icon">TX</div>
+      <div class="topbar-logo-text">TradeX</div>
+    </div>
+    <div class="topbar-nav">
+      <button class="nav-btn active" onclick="showPage('dashboard')">Dashboard</button>
+      <button class="nav-btn" onclick="showPage('portfolio')">Portfolio</button>
+      <button class="nav-btn" onclick="showPage('orders')">Orders</button>
+    </div>
+    <div class="topbar-right">
+      <div class="balance-chip">
+        <span class="balance-label">Balance</span>
+        <span class="balance-val" id="balance-display">₹0</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-layout">
+
+    <!-- LEFT SIDEBAR: WATCHLIST -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Watchlist</div>
+      </div>
+      <div id="watchlist"></div>
+    </div>
+
+    <!-- RIGHT CONTENT -->
+    <div class="content">
+
+      <!-- Pg 1: Dashboard -->
+      <div class="page active" id="page-dashboard">
+        <div class="section-title">Market Overview</div>
+
+        <!-- Stsats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Portfolio Value</div>
+            <div class="stat-val" id="stat-portfolio">₹0</div>
+            <div class="stat-sub up" id="stat-pnl">+₹0 (0%)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Available Balance</div>
+            <div class="stat-val" id="stat-balance">₹1,00,000</div>
+            <div class="stat-sub" style="color:var(--muted)">Cash in hand</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Invested</div>
+            <div class="stat-val" id="stat-invested">₹0</div>
+            <div class="stat-sub" style="color:var(--muted)">Across all stocks</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Holdings</div>
+            <div class="stat-val" id="stat-holdings">0</div>
+            <div class="stat-sub" style="color:var(--muted)">Different stocks</div>
+          </div>
+        </div>
+
+        <!-- main trading panel -->
+        <div class="trade-panel">
+          <div class="trade-panel-header">
+            <div>
+              <div class="selected-stock-name" id="sel-stock-name">Select a stock from watchlist</div>
+              <div style="color:var(--muted);font-size:13px" id="sel-stock-sector">—</div>
+            </div>
+            <div class="selected-stock-price" id="sel-stock-price">—</div>
+          </div>
+
+          <div class="trade-tabs">
+            <button class="trade-tab buy active" id="tab-buy"  onclick="switchTradeTab('buy')">BUY</button>
+            <button class="trade-tab sell"        id="tab-sell" onclick="switchTradeTab('sell')">SELL</button>
+          </div>
+
+          <div class="trade-row">
+            <div class="trade-form-group">
+              <label class="trade-label">Quantity</label>
+              <input class="trade-input" id="qty-input" type="number" min="1" value="1" oninput="updateTotal()">
+            </div>
+            <div class="trade-form-group">
+              <label class="trade-label">Price per share</label>
+              <div class="trade-total" id="price-display">₹—</div>
+            </div>
+            <div class="trade-form-group">
+              <label class="trade-label">Total Amount</label>
+              <div class="trade-total" id="total-display">₹—</div>
+            </div>
+            <div>
+              <button class="btn-buy" id="trade-btn" onclick="executeTrade()">BUY NOW</button>
+            </div>
+          </div>
+
+          <div class="trade-msg" id="trade-msg"></div>
+        </div>
+      </div>
+
+      <!-- PAGE 2: your portfolio -->
+      <div class="page" id="page-portfolio">
+        <div class="section-title">My Portfolio</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px">
+          <div id="portfolio-content"></div>
+        </div>
+      </div>
+
+      <!-- PAGE 3: the order we buy -->
+      <div class="page" id="page-orders">
+        <div class="section-title">Order History</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px">
+          <div id="orders-content"></div>
+        </div>
+      </div>
+
+    </div><!-- end .content -->
+  </div><!-- end .main-layout -->
+</div><!-- end #app -->
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast"></div>
+
+<!-- JS alag file se aa raha hai -->
+<script src="app (1).js"></script>
+
+</body>
+</html>
